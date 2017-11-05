@@ -1,22 +1,167 @@
 <?php
 namespace Home\Controller;
 
+use Org\Util\Stringtp;
 use Think\Controller;
+use Think\Model;
 
 class IndexController extends BaseController {
     private $appid = 'wx81a4a4b77ec98ff4';
     private $acess_token = 'gh_68f0a1ffc303';
-
+    private $total = 5;
     public function index() {
         $this->display();
     }
 
     public function getQustion() {
-
+        $isNew = I('post.new', 'new');
+        $isNew = $isNew == 'true' ? true:false;
+        $users = M('users');
+        $openid = session('openid');
+        $data = $users->where(array('openid' => $openid))->find();
+        if ($data['current_exam_process'] < 2) {
+            if($isNew) {
+                $question = $this->getJudge();
+            } else {
+                $question = $this->getJudge($data['last_question_id']);
+            }
+            if ($data['current_exam_process'] == 0) {
+                $data['current_exam_process'] += 1;
+            }
+        } elseif (1 < $data['current_exam_process'] && $data['current_exam_process'] < 4) {
+            if($isNew) {
+                $question = $this->getFillBlank();
+            } else {
+                $question = $this->getFillBlank($data['last_question_id']);
+            }
+        } elseif (3 < $data['current_exam_process'] && $data['current_exam_process'] < 6) {
+            if($isNew) {
+                $question = $this->getSelect();
+            } else {
+                $question = $this->getSelect($data['last_question_id']);
+            }
+        } else {
+            $this->ajaxReturn(array(
+                'status'  => 500,
+                'info' => 'server error'
+            ));
+        }
+        $data['last_question_id'] = $question['id'];
+        $users->where(array('openid' => $openid))->save($data);
+        $this->ajaxReturn(array(
+            'status'  => 200,
+            'data'    => $question,
+            'current' => $data['current_exam_process']
+        ));
     }
 
-    public function getSelect() {
-        $question = M('select')->order('rand()')->find();
+    public function answer() {
+        $time = I('post.time', '');
+        $isCorrect = I('post.isCorrect', 'false');
+        if(!is_numeric($time)) {
+            $this->ajaxReturn(array(
+                'status' => 400,
+                'info'   => '格式错误'
+            ));
+        }
+        //不直接$isCorrect, 而是这样写是有原因的
+        $users = M('users');
+        $openid = session('openid');
+        //其实这里写得是有问题的, 在高并发下情况下会搞出来脏数据的, 不过并没有机会高并发:)
+        $data = $users->where(array('openid' => $openid))->find();
+        if($isCorrect == 'true' || $isCorrect === true) {
+            $data['avg_time'] = $data['avg_time'] * $data['answer_num'] / ($data['answer_num'] + 1);
+            $data['answer_num'] += 1;
+            $data['all_score'] += 20;
+            $data['last_score'] += 20;
+            $data['top_score'] = $data['last_score'] > $data['top_score'] ? $data['last_score'] : $data['top_score'];
+        }
+        $data['current_exam_process'] += 1;
+        if ($data['current_exam_process'] > $this->total) {
+            $data['current_exam_process'] = 0;
+            $data['last_score'] = 0;
+            $data['last_question_id'] = 0;
+        }
+        $users->where(array('openid' => $openid))->save($data);
+        $this->ajaxReturn(array(
+            'status' => 200,
+            'info'   => '成功'
+        ));
+    }
+
+    public function personal() {
+        $openid = session('openid');
+        $users = M('users');
+        $user = $users->where(array('openid' => $openid))->find();
+        $model = new Model();
+        $row = $model->query("select * from (select *, (@rank := @rank + 1)rank from (select openid from users order by all_score desc, avg_time asc)t, (select @rank := 0)a)b WHERE openid='$openid'");
+        $rank = $row[0]['rank'];
+        $data = array(
+            'correct' => $user['last_score']/20,
+            'last_score' => $user['last_score'],
+            'all_score' => $user['all_score'],
+            'rank' => $rank,
+        );
+        $this->ajaxReturn(array(
+            'status' => 200,
+            'data'   => $data
+        ));
+    }
+
+    public function personRank() {
+        $openid = session('openid');
+        $model = new Model();
+        $row = $model->query("select * from (select *, (@rank := @rank + 1)rank from (select openid from users order by all_score desc, avg_time asc)t, (select @rank := 0)a)b WHERE openid='$openid'");
+        $rank = $row[0]['rank'];
+        $users = M('users');
+        $user = $users->where(array('openid' => $openid))->find();
+        $list = $users->order('all_score desc, avg_time asc')->field('nickname, avatar, all_score')->limit(50)->select();
+        $this->ajaxReturn(array(
+            'status' => 200,
+            'data' => array(
+                'personal' => array(
+                    'rank' => $rank,
+                    'avatar' => $user['avatar'],
+                    'nickname' => $user['nickname'],
+                ),
+                'list' => $list
+            )
+        ));
+    }
+
+    public function classRank() {
+        $openid = session('openid');
+        $users = M('users');
+        $user = $users->where(array('openid' => $openid))->find();
+        $model = new Model();
+        $rows = $model->query("select DISTINCT b.class_id, college, rank from (select *, (@rank := @rank + 1)rank from (select class_id, sum(all_score) as score from users group by class_id order by score desc)t, (select @rank := 0)a)b inner join class on b.class_id = class.class_id");
+        $rank = 0;
+        foreach ($rows as $v) {
+            $rank++;
+            if ($user['class_id'] == $v['class_id']) {
+                break;
+            }
+        }
+        $this->ajaxReturn(array(
+            'status' => 200,
+            'data' => array(
+                'personal' => array(
+                    'rank' => $rank,
+                    'avatar' => $user['avatar'],
+                    'nickname' => $user['nickname'],
+                ),
+                'list' => $rows
+            )
+        ));
+    }
+
+
+    private function getSelect($id = null) {
+        if ($id != null) {
+            $question = M('select')->where(array('id' => $id))->find();
+        } else {
+            $question = M('select')->order('rand()')->find();
+        }
         $id = $question['id'];
         $q = $question['question'];
         $answer = $question['answer'];
@@ -35,20 +180,48 @@ class IndexController extends BaseController {
             'question' => $q,
             'select' => $select,
             'answer' => $answer,
+            'type' => strlen($answer) > 1 ? 'multiSelect': 'select',
         );
         return $data;
     }
 
-    public function getFillBlank() {
-        $question = M('select')->order('rand()')->find();
-
+    private function getFillBlank($id = null) {
+        if ($id != null) {
+            $question = M('fillblank')->where(array('id' => $id))->find();
+        } else {
+            $question = M('fillblank')->order('rand()')->find();
+        }
+        $q = explode('_', $question['question']);
+        $question['question'] = array($q[0], $q[count($q)-1]);
+        $s = new Stringtp();
+        $str = $s->randString(8-mb_strlen($question['answer'], 'utf-8'), 4);
+        $question['fill'] = $this->mbStrSplit($question['answer'].$str);
+        shuffle($question['fill']);
+        $question['type'] = 'fillblank';
+        return $question;
     }
 
-    public function getJudge() {
-        $question = M('judge')->order('rand()')->find();
+    private function getJudge($id = null) {
+        if ($id != null) {
+            $question = M('judge')->where(array('id' => $id))->find();
+        } else {
+            $question = M('judge')->order('rand()')->find();
+        }
         $question['isTrue'] = $question['answer'] == '正确' ? true:false;
         unset($question['answer']);
-        var_dump($question);
+        $question['type'] = 'judge';
+        return $question;
+    }
+
+    private function mbStrSplit($string, $len=1) {
+        $start = 0;
+        $strlen = mb_strlen($string);
+        while ($strlen) {
+            $array[] = mb_substr($string,$start,$len,"utf8");
+            $string = mb_substr($string, $len, $strlen,"utf8");
+            $strlen = mb_strlen($string);
+        }
+        return $array;
     }
 
     private function getTicket() {
@@ -71,7 +244,7 @@ class IndexController extends BaseController {
     }
 
     public function JSSDKSignature(){
-        $string = new String();
+        $string = new Stringtp();
         $jsapi_ticket =  $this->getTicket();
         $data['jsapi_ticket'] = $jsapi_ticket['data'];
         $data['noncestr'] = $string->randString();

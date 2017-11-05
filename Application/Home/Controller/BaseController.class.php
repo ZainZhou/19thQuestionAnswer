@@ -60,6 +60,9 @@ class BaseController extends Controller {
             if($ret['status'] == 200){
                 $data['stu_id'] = $ret['stuId'] ? $ret['stuId']:'';
                 $class_id = M('class')->where(array('stu_id' => $ret['stuId']))->getField('class_id');
+                if (APP_DEBUG) {
+                    $class_id = '12011501';
+                }
                 $data['class_id'] = $class_id ? $class_id:'';
             }
             if ($nickname && ($img || count($data) > 0)) {
