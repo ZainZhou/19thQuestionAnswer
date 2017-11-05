@@ -10,7 +10,47 @@ class IndexController extends BaseController {
     public function index() {
         $this->display();
     }
-    
+
+    public function getQustion() {
+
+    }
+
+    public function getSelect() {
+        $question = M('select')->order('rand()')->find();
+        $id = $question['id'];
+        $q = $question['question'];
+        $answer = $question['answer'];
+
+        unset($question['id']);
+        unset($question['question']);
+        unset($question['answer']);
+        $select = array();
+        foreach ($question as $v) {
+            if ($v) {
+                array_push($select, $v);
+            }
+        }
+        $data = array(
+            'id' => $id,
+            'question' => $q,
+            'select' => $select,
+            'answer' => $answer,
+        );
+        return $data;
+    }
+
+    public function getFillBlank() {
+        $question = M('select')->order('rand()')->find();
+
+    }
+
+    public function getJudge() {
+        $question = M('judge')->order('rand()')->find();
+        $question['isTrue'] = $question['answer'] == '正确' ? true:false;
+        unset($question['answer']);
+        var_dump($question);
+    }
+
     private function getTicket() {
         $time = time();
         $str = 'abcdefghijklnmopqrstwvuxyz1234567890ABCDEFGHIJKLNMOPQRSTWVUXYZ';
