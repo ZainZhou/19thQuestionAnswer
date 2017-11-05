@@ -3,10 +3,55 @@ namespace Home\Controller;
 
 use Think\Controller;
 
-class IndexController extends Controller
-{
-    public function index()
-    {
-        $this->show('<style type="text/css">*{ padding: 0; margin: 0; } div{ padding: 4px 48px;} body{ background: #fff; font-family: "微软雅黑"; color: #333;font-size:24px} h1{ font-size: 100px; font-weight: normal; margin-bottom: 12px; } p{ line-height: 1.8em; font-size: 36px } a,a:hover{color:blue;}</style><div style="padding: 24px 48px;"> <h1>:)</h1><p>欢迎使用 <b>ThinkPHP</b>！</p><br/>版本 V{$Think.version}</div><script type="text/javascript" src="http://ad.topthink.com/Public/static/client.js"></script><thinkad id="ad_55e75dfae343f5a1"></thinkad><script type="text/javascript" src="http://tajs.qq.com/stats?sId=9347272" charset="UTF-8"></script>','utf-8');
+class IndexController extends BaseController {
+    private $appid = 'wx81a4a4b77ec98ff4';
+    private $acess_token = 'gh_68f0a1ffc303';
+
+    public function index() {
+        $this->display();
     }
+    
+    private function getTicket() {
+        $time = time();
+        $str = 'abcdefghijklnmopqrstwvuxyz1234567890ABCDEFGHIJKLNMOPQRSTWVUXYZ';
+        $string='';
+        for($i=0;$i<16;$i++){
+            $num = mt_rand(0,61);
+            $string .= $str[$num];
+        }
+        $secret =sha1(sha1($time).md5($string)."redrock");
+        $t2 = array(
+            'timestamp'=>$time,
+            'string'=>$string,
+            'secret'=>$secret,
+            'token'=>$this->acess_token,
+        );
+        $url = $this->oauthDomain.'/MagicLoop/index.php?s=/addon/Api/Api/apiJsTicket';
+        return $this->curl_api($url, $t2);
+    }
+
+    public function JSSDKSignature(){
+        $string = new String();
+        $jsapi_ticket =  $this->getTicket();
+        $data['jsapi_ticket'] = $jsapi_ticket['data'];
+        $data['noncestr'] = $string->randString();
+        $data['timestamp'] = time();
+        $data['url'] = 'https://'.$_SERVER['HTTP_HOST'].__SELF__;//生成当前页面url
+        $data['signature'] = sha1($this->ToUrlParams($data));
+        return $data;
+    }
+
+    private function ToUrlParams($urlObj){
+        $buff = "";
+        foreach ($urlObj as $k => $v) {
+            if($k != "signature") {
+                $buff .= $k . "=" . $v . "&";
+            }
+        }
+        $buff = trim($buff, "&");
+        return $buff;
+    }
+
+
+
 }
