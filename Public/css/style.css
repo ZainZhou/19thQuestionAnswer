@@ -1,8 +1,66 @@
 * {
   padding: 0;
   margin: 0;
+  text-shadow: none;
+}
+@font-face {
+  font-family: 'hb';
+  src: url('../font/hb.ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+.logo {
+  float: left;
+  width: 25.33%;
+  margin: 2.4%;
+}
+.btn {
+  width: 38%;
+  padding: 1% 0;
+  padding-bottom: 3%;
+  text-align: center;
+  font-family: hb;
+  color: #ffffff;
+  font-size: 22px;
+  border-radius: 10px;
+  text-shadow: 0 0 1px #623118;
+}
+.b_btn {
+  background: url("../images/blue_btn.png") center center no-repeat;
+  background-size: 100% 100%;
+}
+.r_btn {
+  background: url("../images/red_btn.png") center center no-repeat;
+  background-size: 100% 100%;
 }
 #HomePage {
   background: url("../images/homePage_back.jpg") center no-repeat;
+  background-size: 100% 100%;
+}
+#HomePage .HomePage_slogan {
+  width: 94.66%;
+  display: block;
+  margin: 0 auto;
+}
+#HomePage .startBtn {
+  margin-bottom: 5%;
+}
+#HomePage .btn_container {
+  text-align: center;
+  margin-top: 14%;
+}
+#HomePage .btn_container * {
+  display: inline-block;
+}
+#HomePage .copyright {
+  text-align: center;
+  font-size: 10px;
+  color: #ffffff;
+  width: 100%;
+  position: absolute;
+  top: 97%;
+}
+#testPage {
+  background: url("../images/gamePage.jpg") center no-repeat;
   background-size: 100% 100%;
 }
