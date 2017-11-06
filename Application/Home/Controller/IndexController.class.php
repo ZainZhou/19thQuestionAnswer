@@ -13,19 +13,20 @@ class IndexController extends BaseController {
         $this->display();
     }
 
-    public function getQustion() {
+    public function getQuestion() {
         $isNew = I('post.new', 'new');
         $isNew = $isNew == 'true' ? true:false;
         $users = M('users');
         $openid = session('openid');
         $data = $users->where(array('openid' => $openid))->find();
         if ($data['current_exam_process'] < 2) {
-            if($isNew) {
+            if($isNew || $data['last_question_id'] == 0) {
                 $question = $this->getJudge();
             } else {
                 $question = $this->getJudge($data['last_question_id']);
             }
             if ($data['current_exam_process'] == 0) {
+                $data['last_score'] = 0;
                 $data['current_exam_process'] += 1;
             }
         } elseif (1 < $data['current_exam_process'] && $data['current_exam_process'] < 4) {
@@ -55,22 +56,22 @@ class IndexController extends BaseController {
         ));
     }
 
+    //有个逻辑漏洞, 一直无限post这个接口就哈哈哈哈
     public function answer() {
-        $time = I('post.time', '');
         $isCorrect = I('post.isCorrect', 'false');
-        if(!is_numeric($time)) {
+        if($isCorrect == '') {
             $this->ajaxReturn(array(
                 'status' => 400,
                 'info'   => '格式错误'
             ));
         }
-        //不直接$isCorrect, 而是这样写是有原因的
         $users = M('users');
         $openid = session('openid');
         //其实这里写得是有问题的, 在高并发下情况下会搞出来脏数据的, 不过并没有机会高并发:)
         $data = $users->where(array('openid' => $openid))->find();
+        //不直接$isCorrect, 而是这样写是有原因的
         if($isCorrect == 'true' || $isCorrect === true) {
-            $data['avg_time'] = $data['avg_time'] * $data['answer_num'] / ($data['answer_num'] + 1);
+            $data['avg_time'] = time();
             $data['answer_num'] += 1;
             $data['all_score'] += 20;
             $data['last_score'] += 20;
@@ -79,7 +80,6 @@ class IndexController extends BaseController {
         $data['current_exam_process'] += 1;
         if ($data['current_exam_process'] > $this->total) {
             $data['current_exam_process'] = 0;
-            $data['last_score'] = 0;
             $data['last_question_id'] = 0;
         }
         $users->where(array('openid' => $openid))->save($data);
