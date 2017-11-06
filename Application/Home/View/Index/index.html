@@ -9,11 +9,14 @@
     <link rel="stylesheet" href="__PUBLIC__/js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css">
     <script src = '__PUBLIC__/js/jquery-2.1.4.min.js'></script>
     <script src = '__PUBLIC__/js/jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js'></script>
+    <script src = '__PUBLIC__/js/setstyle.js?v={:time()}'></script>
+    <script src = '__PUBLIC__/js/QuestionClass.js?v={:time()}'></script>
+    <script src = '__PUBLIC__/js/run.js?v={:time()}'></script>
     <link rel="stylesheet" href="__PUBLIC__/css/style.css?v={:time()}">
     <link rel="stylesheet" href="__PUBLIC__/css/animate.min.css?v={:time()}">
 </head>
 <body>
-    <div data-role="page" id="HomePage">
+    <div data-role="page" id="homePage">
         <img src="__PUBLIC__/images/VoiceofYoung.png?v=1" alt="" class="logo">
         <img src="__PUBLIC__/images/HomePage_slogan.png?v=1" alt="" class="HomePage_slogan">
         <div class="btn_container">
@@ -28,7 +31,120 @@
         <p class="copyright">©红岩网校工作站</p>
     </div>
     <div data-role="page" id="testPage">
-
+        <img src="__PUBLIC__/images/VoiceofYoung.png?v=1" alt="" class="logo">
+        <p class="QuestionType">
+            填空题
+        </p>
+        <div class="questionContainer">
+            我们党坚持以马克思列宁主义、毛泽东思想、邓小平理论、<span class="fillbox">三</span><span class="fillbox">个</span><span class="fillbox">代</span><span class="fillbox">表</span>重要思想、科学发展观为指导，坚持解放思想、实事求是、与时俱进、求真务实，坚持辩证唯物主义和历史唯物主义，紧密结合新的时代条件和实践要求，以全新的视野深化对共产党执政规律、社会主义建设规律、人类社会发展规律的认识，进行艰辛理论探索，取得重大理论创新成果，形成了___________中国特色社会主义思想。
+        </div>
+        <p class="Description">三个代表思想</p>
+        <div class="MultipleChoice">
+            <ul class="selections">
+                <li data-flage = 'A'>
+                    <span class="label">&nbsp;A&nbsp;</span>
+                    <span class="selection">
+                        新阶段
+                    </span>
+                </li>
+                <li data-flage = 'B'>
+                    <span class="label">&nbsp;B&nbsp;</span>
+                    <span class="selection">
+                        新阶段
+                    </span>
+                </li>
+                <li data-flage = 'C'>
+                    <span class="label">&nbsp;C&nbsp;</span>
+                    <span class="selection">
+                        新阶段
+                    </span>
+                </li>
+                <li data-flage = 'D'>
+                    <span class="label">&nbsp;D&nbsp;</span>
+                    <span class="selection">
+                        新阶段
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div class="TrueFalse">
+            <div dec = 'true' class="right selection">
+                <span class="label">&nbsp;A&nbsp;</span> <span class="dec">正确</span>
+            </div>
+            <div dec = 'false' class="wrong selection">
+                <span class="label">&nbsp;B&nbsp;</span> <span class="dec">错误</span>
+            </div>
+        </div>
+        <div class="FillBlank">
+            <ul class="FillSelections">
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+                <li>社</li>
+            </ul>
+        </div>
+        <div class="applyBtn btn r_btn">
+            确定
+        </div>
+    </div>
+    <div data-role="page" id="overPage">
+        <img src="__PUBLIC__/images/VoiceofYoung.png?v=1" alt="" class="logo">
+        <div class="GradeBoard">
+            <img src="__PUBLIC__/images/PopupWindow_title.png?v=1" alt="" class="PopupWindow_title">
+            <div class="info_container">
+                本组测试一共答对 <span class="right_num">2</span> 道题<br>
+                获得积分 <span class="score_s">40</span> 分 <br>
+                测试累计得分为 <span class="score_c">120</span> 分 <br>
+                排第 <span class="rank_num">2</span> 名
+            </div>
+        </div>
+        <div class="btn_container">
+            <div class="RankBtn r_btn btn">查看榜单</div>
+            <br>
+            <div class="ReplayBtn b_btn btn">再测一次</div>
+        </div>
+    </div>
+    <div data-role="page" id="rankPage">
+        <img src="__PUBLIC__/images/VoiceofYoung.png" alt="" class="logo">
+        <div class="list_container">
+            <img src="__PUBLIC__/images/rank_title.png" alt="" class="list_title">
+            <div class="rank_list">
+                <img src="__PUBLIC__/images/boy.png" alt="" class="user_avatar">
+                <p class="nickname">Lich</p>
+                <p class="rank">我的排名：第 <span class="ranknum">100</span> 名</p>
+                <div class="btnContainer">
+                    <div class="classRank r_btn btn" style="margin-right: 10%">班级榜单</div>
+                    <div class="returnHome y_btn btn">返回首页</div>
+                </div>
+                <ul class="list_rank">
+                    <li style="background: #feebcb">
+                        <img src="__PUBLIC__/images/boy.png" alt="" class="list_avatar">
+                        <span class="list_nickname">Lich</span>
+                        <img src="__PUBLIC__/images/gold.png" alt="" class="medal">
+                    </li>
+                    <li>
+                        <img src="__PUBLIC__/images/boy.png" alt="" class="list_avatar">
+                        <span class="list_nickname">Lich</span>
+                        <img src="__PUBLIC__/images/silver.png" alt="" class="medal">
+                    </li>
+                    <li style="background: #feebcb">
+                        <img src="__PUBLIC__/images/boy.png" alt="" class="list_avatar">
+                        <span class="list_nickname">Lich</span>
+                        <img src="__PUBLIC__/images/copper.png" alt="" class="medal">
+                    </li>
+                    <li>
+                        <img src="__PUBLIC__/images/boy.png" alt="" class="list_avatar">
+                        <span class="list_nickname">Lich</span>
+                        <span class="list_ranknum">4</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <p class="copyright">©️红岩网校工作站</p>
     </div>
     <script src="//res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
     <script>
