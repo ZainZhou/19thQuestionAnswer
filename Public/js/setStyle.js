@@ -6,7 +6,7 @@ $(function(){
     var questionContainer = $('.questionContainer');
     var TrueFalse = $('.TrueFalse');
     var FillBlank = $('.FillBlank');
-    TrueFalse.css('height',w*0.504);
-    FillBlank.css('height',w*0.504);
+    TrueFalse.css('height',w*0.4);
+    FillBlank.css('height',w*0.4);
     questionContainer.css('height',w*0.58);
 });
