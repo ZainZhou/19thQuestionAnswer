@@ -59,6 +59,9 @@ $(function(){
     var ranknum = $('.ranknum');
     var RankBtn = $('.RankBtn');
     var nickname = $('.nickname');
+    var judged = null;
+    var filled = [];
+    var chosed = [];
     var Description = $('.Description');
     var ranks = $('.list_rank');
     var top3 = ranks.find('li');
@@ -132,8 +135,9 @@ $(function(){
                     fill_box = $('.fillbox');
                 }
                 if(q_now.type == 'judge'){
-                    Description.css({'display':'block','visibility':'hidden'});
                     Description.html(q_now.reason+"&nbsp;");
+                }else{
+                    Description.html("正确答案:"+q_now.answer);
                 }
                 current = data.current;
                 $.mobile.changePage('#testPage',{
@@ -145,12 +149,13 @@ $(function(){
     chose_btn.on('click',function(){
         q_now.selected += $(this).attr('data-flag');
         $(this).css('background','#ffffff');
-        console.log(q_now.selected);
+        chosed.push($(this));
     });
     judge_btn.on('click',function(){
         q_now.selected = $(this).attr('dec');
         judge_btn.css('background','#fea087');
         $(this).css('background','#ffffff');
+        judged = $(this);
     });
 
     fill_sell.on('click',function(){
@@ -161,6 +166,7 @@ $(function(){
         $(this).css({'background':'#fea087','color':'#ffffff'});
         fill_box.eq(fill_flag-1).html($(this).html());
         q_now.selected += $(this).html();
+        filled.push($(this));
         fill_box.eq(fill_flag-1).css('color','#fb5d32');
     });
     apply_btn.on('click',function(){
@@ -170,7 +176,6 @@ $(function(){
             }
             apply_flag = true;
             var isRight = q_now.check();
-            $.mobile.loading('show');
             var _data = {};
             _data.isCorrect = isRight;
 
@@ -179,24 +184,62 @@ $(function(){
                     alert(data.error);
                 }
             });
+            Description.css('visibility','visible');
+            switch(q_now.type){
+                case 'judge':
+                    if(isRight){
+                        judged.css('background','#29f676');
+                    }else{
+                        judged.css('background','#f13516');
+                    }
+                    break;
+                case 'fillblank':
+                    if(isRight){
+                        for(var i = 0 ; i < filled.length ; i++){
+                            filled[i].css('background','#29f676');
+                        }
+                    }else{
+                        for(var i = 0 ; i < filled.length ; i++){
+                            filled[i].css('background','#f13516');
+                        }
+                    }
+                    break;
+                default:
+                    if(isRight){
+                        for(var i = 0 ; i < chosed.length ; i++){
+                            chosed[i].css('background','#29f676');
+                        }
+                    }else{
+                        for(var i = 0 ; i < chosed.length ; i++){
+                            chosed[i].css('background','#f13516');
+                        }
+                    }
+            }
             setTimeout(function(){
+                $.mobile.loading('show');
                 chose_btn.css('background','#fea087');
                 fill_sell.css({'background':'#ffffff','color':'#f88364'});
                 judge_btn.css('background','#fea087');
+                Description.css('visibility','hidden');
                 if(current < 5){
                     var _data = {};
                     _data.new = true;
                     $.post(questionLink,_data,function(data){
-                        apply_flag = false;
                         $.mobile.loading('hide');
+                        apply_flag = false;
                         if(data.status == 200){
+                            filled = [];
+                            chosed = [];
+                            judged = null;
                             console.log(data.data);
                             q_now = fillQuestion(data.data,qc,operators,ops_sell);
                             if(q_now.type == 'fillblank'){
                                 fill_box = $('.fillbox');
                             }
                             if(q_now.type == 'judge'){
-                                Description.css('display','block');
+                                Description.html(q_now.reason+"&nbsp;");
+                            }else{
+                                Description.html("正确答案:"+q_now.answer);
                             }
                             current = data.current;
                         }else{
