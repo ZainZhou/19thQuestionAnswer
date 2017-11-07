@@ -10,6 +10,9 @@ class IndexController extends BaseController {
     private $acess_token = 'gh_68f0a1ffc303';
     private $total = 5;
     public function index() {
+        $signature = $this->JSSDKSignature();
+        $this->assign('signature', $signature);
+        $this->assign('appid', $this->appid);
         $this->display();
     }
 
