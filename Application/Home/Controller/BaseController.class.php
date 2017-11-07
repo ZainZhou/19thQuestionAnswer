@@ -5,6 +5,7 @@ use Think\Controller;
 
 class BaseController extends Controller {
     protected $oauthDomain = 'https://wx.idsbllp.cn';
+    protected $callbackurl = 'https://wx.idsbllp.cn/game/19thQuestionAnswer/'; //硬编码算了, 估计那边rewrite规则有问题 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']
     public function _initialize() {
         header('Access-Control-Allow-Origin: *');
         if (APP_DEBUG) {
@@ -19,7 +20,7 @@ class BaseController extends Controller {
             $nickname = urldecode(I('get.nickname'));//'知识混子周政';//
         }
         if (!$openid  || !$nickname) {
-            $uri = $this->oauthDomain.'/MagicLoop/index.php?s=/addon/Api/Api/oauth&redirect='.urlencode('https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
+            $uri = $this->oauthDomain.'/MagicLoop/index.php?s=/addon/Api/Api/oauth&redirect='.urlencode($this->callbackurl);
             redirect($uri);
         }
         session('openid', $openid);
@@ -30,7 +31,7 @@ class BaseController extends Controller {
             $data = array(
                 'openid' => $openid,
                 'nickname' => $nickname,
-                'avatar' => urldecode(I('get.headimgurl')),
+                'avatar' => urldecode(I('get.headimgurl', '')),
             );
             $req = array(
                 'token' => 'gh_68f0a1ffc303',
@@ -48,7 +49,7 @@ class BaseController extends Controller {
             $users->add($data);
         } else {
             $data = array();
-            $img = I('get.headimgurl');
+            $img = I('get.headimgurl', '');
             $req = array(
                 'token' => 'gh_68f0a1ffc303',
                 'timestamp' => '1509870994',
@@ -65,7 +66,7 @@ class BaseController extends Controller {
                 }
                 $data['class_id'] = $class_id ? $class_id:'';
             }
-            if ($nickname && ($img || count($data) > 0)) {
+            if ($nickname && ($img != '' || count($data) > 0)) {
                 $data['nickname'] = $nickname;
                 $data['avatar'] = urldecode($img);
                 $users->where(array('openid' => $openid))->save($data);
