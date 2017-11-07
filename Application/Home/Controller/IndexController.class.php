@@ -182,6 +182,9 @@ class IndexController extends BaseController {
                 array_push($select, $v);
             }
         }
+        if(strlen($answer) > 1){
+            $q = $q.'（多选题）';
+        }
         $data = array(
             'id' => $id,
             'question' => $q,
