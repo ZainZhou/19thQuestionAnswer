@@ -6,6 +6,7 @@ var questionLink = "/19thQuestionAnswer/index.php/Home/Index/getQuestion";
 var answerLink = "/19thQuestionAnswer/index.php/Home/Index/answer";
 var personalLink = "/19thQuestionAnswer/index.php/Home/Index/personal";
 var rankLink = "/19thQuestionAnswer/index.php/Home/Index/personRank";
+var classrankLink = "/19thQuestionAnswer/index.php/Home/Index/classRank";
 function fillQuestion(data,qc,ops,ops_sell){
     for(var i = 0 ; i < ops.length ; i++){
         ops[i].css('display','none');
@@ -65,9 +66,15 @@ $(function(){
     var Description = $('.Description');
     var ranks = $('.list_rank');
     var top3 = ranks.find('li');
+    var classRankBtn = $('.classRank');
+    var classranks = $('.classlist_rank');
+    var top3class = classranks.find('li');
     var rankBtn_flag = 0;
+    var classranknum = $('.classranknum');
     var rank_load = 0;
+    var classrankBtn_flag = 0;
     var returnHome = $('.returnHome');
+    var classrank_load = 0;
     returnHome.on('click',function(){
         $.mobile.changePage('#homePage',{
             transition:'flow'
@@ -76,6 +83,44 @@ $(function(){
     ReplayBtn.on('click',function(){
         $.mobile.changePage('#homePage',{
             transition:'flow'
+        })
+    });
+    classRankBtn.on('click',function(){
+        if(classrankBtn_flag){
+            return false
+        }
+        classrankBtn_flag = 1;
+        $.mobile.loading('show');
+        $.get(classrankLink,function(data){
+            $.mobile.loading('hide');
+            classrankBtn_flag = 0;
+            if(data.status == 200){
+                user_avatar.attr('src',data.data.personal.avatar);
+                nickname.html(data.data.personal.nickname);
+                classranknum.html(data.data.personal.rank);
+                if(classrank_load){
+                    return false;
+                }else {
+                    for(var i = 0 ; i < data.data.list.length ; i++){
+                        if(i<3){
+                            top3.eq(i).find('.list_college').html(data.data.list[i].college);
+                            top3.eq(i).find('.list_classNum').html(data.data.list[i].class_id+'班');
+                        }else{
+                            if(i%2 == 0){
+                                classranks.append('<li style="background: #feebcb">' +'<span class="list_college">'+data.data.list[i].college+'</span>'+'<span class="list_classNum">'+data.data.list[i].class_id+'班'+'</span>'+'<span class="list_ranknum">'+data.data.list[i].rank+'</span></li>');
+                            }else{
+                                classranks.append('<li>' +'<span class="list_college">'+data.data.list[i].college+'</span>'+'<span class="list_classNum">'+data.data.list[i].class_id+'班'+'</span>'+'<span class="list_ranknum">'+data.data.list[i].rank+'</span></li>');
+                            }
+                        }
+                    }
+                    classrank_load = 1;
+                }
+                $.mobile.changePage('#classRankPage',{
+                    transition: 'flow'
+                })
+            }else{
+                alert(data.status);
+            }
         })
     });
     RankBtn.on('click',function(){
@@ -108,7 +153,7 @@ $(function(){
                     }
                     rank_load = 1;
                 }
-                $.mobile.changePage('#listPage',{
+                $.mobile.changePage('#rankPage',{
                     transition: 'flow'
                 })
             }else {
