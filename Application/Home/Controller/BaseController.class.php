@@ -65,8 +65,9 @@ class BaseController extends Controller {
                     $class_id = '12011501';
                 }
                 $data['class_id'] = $class_id ? $class_id:'';
+                $users->where(array('openid' => $openid))->save($data);
             }
-            if ($nickname && ($img != '' || count($data) > 0)) {
+            if ($nickname && $img != '') {
                 $data['nickname'] = $nickname;
                 $data['avatar'] = urldecode($img);
                 $users->where(array('openid' => $openid))->save($data);
