@@ -31,7 +31,7 @@ class BaseController extends Controller {
             $data = array(
                 'openid' => $openid,
                 'nickname' => $nickname,
-                'avatar' => urldecode(I('get.headimgurl')),
+                'avatar' => urldecode(I('get.headimgurl', '')),
             );
             $req = array(
                 'token' => 'gh_68f0a1ffc303',
@@ -49,7 +49,7 @@ class BaseController extends Controller {
             $users->add($data);
         } else {
             $data = array();
-            $img = I('get.headimgurl');
+            $img = I('get.headimgurl', '');
             $req = array(
                 'token' => 'gh_68f0a1ffc303',
                 'timestamp' => '1509870994',
@@ -66,7 +66,7 @@ class BaseController extends Controller {
                 }
                 $data['class_id'] = $class_id ? $class_id:'';
             }
-            if ($nickname && ($img || count($data) > 0)) {
+            if ($nickname && ($img != '' || count($data) > 0)) {
                 $data['nickname'] = $nickname;
                 $data['avatar'] = urldecode($img);
                 $users->where(array('openid' => $openid))->save($data);
