@@ -317,7 +317,6 @@ $(function(){
                         }
                     });
                 }else{
-                    apply_flag = false;
                     $.mobile.loading('hide');
                     $.get(personalLink,function(data){
                         if(data.status == 200){
@@ -328,7 +327,8 @@ $(function(){
                             setTimeout(function(){
                                 $.mobile.changePage('#overPage',{
                                     transition:'flow'
-                                })
+                                });
+                                apply_flag = false;
                             },100)
                         }else{
                             alert(data.error);
