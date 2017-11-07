@@ -105,6 +105,9 @@ $(function(){
                 nickname.html(data.data.personal.nickname);
                 classranknum.html(data.data.personal.rank);
                 if(classrank_load){
+                    $.mobile.changePage('#classRankPage',{
+                        transition: 'flow'
+                    });
                     return false;
                 }else {
                     for(var i = 0 ; i < data.data.list.length ; i++){
@@ -143,6 +146,9 @@ $(function(){
                 nickname.html(data.data.personal.nickname);
                 ranknum.html(data.data.personal.rank);
                 if(rank_load){
+                    $.mobile.changePage('#rankPage',{
+                        transition: 'flow'
+                    });
                     return false;
                 }else{
                     for(var i = 0 ; i < data.data.list.length ; i++){
