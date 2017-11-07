@@ -7,22 +7,28 @@ function Choice(){
     this.answer,
     this.question,
     this.selections,
-    this.choices
+    this.selected,
+    this.choices,
+    this.operator,
+    this.type
 }
-Choice.prototype.init = function(multiple,qc,answer,question,selections,choices,type){
+Choice.prototype.init = function(multiple,qc,answer,question,choices,selections,operator,type){
     this.multiple = multiple;
     this.qc = qc;
     this.answer = answer;
     this.question = question;
-    this.selections = selections;
     this.choices = choices;
+    this.selections = selections;
+    this.operator = operator;
     this.type = type;
+    this.selected = '';
 };
 Choice.prototype.fill = function(){
   this.qc.html(this.question);
   for(var i = 0 ; i < this.choices.length ; i++){
       this.selections.eq(i).html(this.choices[i]);
   }
+  this.operator.css('display','block');
 };
 Choice.prototype.check = function(){
    var flag = this.selected == this.answer ?  true :  false;
@@ -34,20 +40,23 @@ function TrueFlase(){
     this.qc,
     this.answer,
     this.selected,
-    this.operator
+    this.operator,
+    this.type
 }
-TrueFlase.prototype.init = function(question,qc,answer,operator,type){
+TrueFlase.prototype.init = function(question,qc,answer,operator,reason,type){
     this.question = question;
     this.qc = qc;
     this.answer = answer;
     this.operator = operator;
     this.type = type;
+    this.reason = reason;
 };
 TrueFlase.prototype.check = function(){
   var flag = this.selected == this.answer ? true : false;
     return flag
 };
 TrueFlase.prototype.fill = function(){
+  this.operator.css('display','block');
   this.qc.html(this.question);
 };
 
@@ -81,6 +90,7 @@ FillBlank.prototype.fill = function(){
     for(var i = 0 ; i < this.fills.length ; i++){
         this.selections.eq(i).html(this.fills[i]);
     }
+    this.operator.css('display','block');
 };
 FillBlank.prototype.check = function(){
   var flag = this.selected == this.answer ? true : false;

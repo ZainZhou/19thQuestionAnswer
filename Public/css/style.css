@@ -153,6 +153,7 @@
 }
 #testPage .Description {
   float: left;
+  display: none;
   font-size: 12px;
   color: #ffffff;
   margin-top: 5%;
@@ -202,6 +203,7 @@
   width: 87%;
   float: left;
   margin-left: 6.5%;
+  margin-top: 3%;
 }
 #testPage .FillBlank .FillSelections {
   overflow: hidden;
@@ -258,6 +260,7 @@
   float: left;
   margin-left: 31%;
   margin-top: 1%;
+  margin-bottom: 3%;
 }
 #rankPage {
   background: linear-gradient(#f9d166, #fcdf90);
