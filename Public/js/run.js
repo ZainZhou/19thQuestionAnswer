@@ -75,6 +75,12 @@ $(function(){
     var classrankBtn_flag = 0;
     var returnHome = $('.returnHome');
     var classrank_load = 0;
+    var personalRank = $('.personalRank');
+    personalRank.on('click',function(){
+        $.mobile.changePage('#rankPage',{
+            transition:'flow'
+        })
+    });
     returnHome.on('click',function(){
         $.mobile.changePage('#homePage',{
             transition:'flow'
