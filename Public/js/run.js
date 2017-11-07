@@ -5,6 +5,7 @@
 var questionLink = "/19thQuestionAnswer/index.php/Home/Index/getQuestion";
 var answerLink = "/19thQuestionAnswer/index.php/Home/Index/answer";
 var personalLink = "/19thQuestionAnswer/index.php/Home/Index/personal";
+var rankLink = "/19thQuestionAnswer/index.php/Home/Index/personRank";
 function fillQuestion(data,qc,ops,ops_sell){
     for(var i = 0 ; i < ops.length ; i++){
         ops[i].css('display','none');
@@ -54,13 +55,63 @@ $(function(){
     var score_c = $('.score_c');
     var person_rank_num = $('.rank_num');
     var ReplayBtn = $('.ReplayBtn');
+    var user_avatar = $('.user_avatar');
+    var ranknum = $('.ranknum');
     var RankBtn = $('.RankBtn');
+    var nickname = $('.nickname');
+    var Description = $('.Description');
+    var ranks = $('.list_rank');
+    var top3 = ranks.find('li');
+    var rankBtn_flag = 0;
+    var rank_load = 0;
+    var returnHome = $('.returnHome');
+    returnHome.on('click',function(){
+        $.mobile.changePage('#homePage',{
+            transition:'flow'
+        })
+    });
     ReplayBtn.on('click',function(){
         $.mobile.changePage('#homePage',{
             transition:'flow'
         })
     });
     RankBtn.on('click',function(){
+        if(rankBtn_flag){
+            return false
+        }
+        rankBtn_flag = 1;
+        $.mobile.loading('show');
+        $.get(rankLink,function(data){
+            $.mobile.loading('hide');
+            rankBtn_flag = 0;
+            if(data.status == 200){
+                user_avatar.attr('src',data.data.personal.avatar);
+                nickname.html(data.data.personal.nickname);
+                ranknum.html(data.data.personal.rank);
+                if(rank_load){
+                    return false;
+                }else{
+                    for(var i = 0 ; i < data.data.list.length ; i++){
+                        if(i<3){
+                            top3.eq(i).find('.list_avatar').attr('src',data.data.list[i].avatar);
+                            top3.eq(i).find('.list_nickname').html(data.data.list[i].nickname);
+                        }else{
+                            if(i%2 == 0){
+                                ranks.append('<li style="background: #feebcb"> <img src="'+data.data.list[i].avatar+'" alt="" class="list_avatar"> <span class="list_nickname">'+data.data.list[i].nickname+'</span> <span class="list_ranknum">'+data.data.list[i].rank+'</span> </li>');
+                            }else{
+                                ranks.append('<li> <img src="'+data.data.list[i].avatar+'" alt="" class="list_avatar"> <span class="list_nickname">'+data.data.list[i].nickname+'</span> <span class="list_ranknum">'+data.data.list[i].rank+'</span> </li>');
+                            }
+                        }
+                    }
+                    rank_load = 1;
+                }
+                $.mobile.changePage('#listPage',{
+                    transition: 'flow'
+                })
+            }else {
+                alert(data.status);
+            }
+        });
         $.mobile.changePage('#rankPage',{
             transition:'flow'
         })
@@ -79,6 +130,10 @@ $(function(){
                 q_now = fillQuestion(data.data,qc,operators,ops_sell);
                 if(q_now.type == 'fillblank'){
                     fill_box = $('.fillbox');
+                }
+                if(q_now.type == 'judge'){
+                    Description.css({'display':'block','visibility':'hidden'});
+                    Description.html(q_now.reason+"&nbsp;");
                 }
                 current = data.current;
                 $.mobile.changePage('#testPage',{
@@ -113,54 +168,60 @@ $(function(){
             if(apply_flag){
                 return false;
             }
-            chose_btn.css('background','#fea087');
-            fill_sell.css({'background':'#ffffff','color':'#f88364'});
-            judge_btn.css('background','#fea087');
             apply_flag = true;
             var isRight = q_now.check();
             $.mobile.loading('show');
             var _data = {};
             _data.isCorrect = isRight;
+
             $.post(answerLink,_data,function(data){
                 if(data.status != 200){
                     alert(data.error);
                 }
             });
-            if(current < 5){
-                var _data = {};
-                _data.new = true;
-                $.post(questionLink,_data,function(data){
+            setTimeout(function(){
+                chose_btn.css('background','#fea087');
+                fill_sell.css({'background':'#ffffff','color':'#f88364'});
+                judge_btn.css('background','#fea087');
+                if(current < 5){
+                    var _data = {};
+                    _data.new = true;
+                    $.post(questionLink,_data,function(data){
+                        apply_flag = false;
+                        $.mobile.loading('hide');
+                        if(data.status == 200){
+                            console.log(data.data);
+                            q_now = fillQuestion(data.data,qc,operators,ops_sell);
+                            if(q_now.type == 'fillblank'){
+                                fill_box = $('.fillbox');
+                            }
+                            if(q_now.type == 'judge'){
+                                Description.css('display','block');
+                            }
+                            current = data.current;
+                        }else{
+                            alert(data.error)
+                        }
+                    });
+                }else{
                     apply_flag = false;
                     $.mobile.loading('hide');
-                    if(data.status == 200){
-                        console.log(data.data);
-                        q_now = fillQuestion(data.data,qc,operators,ops_sell);
-                        if(q_now.type == 'fillblank'){
-                            fill_box = $('.fillbox');
+                    $.get(personalLink,function(data){
+                        if(data.status == 200){
+                            right_num.html(data.data.correct);
+                            score_s.html(data.data.last_score);
+                            score_c.html(data.data.all_score);
+                            person_rank_num.html(data.data.rank);
+                            setTimeout(function(){
+                                $.mobile.changePage('#overPage',{
+                                    transition:'flow'
+                                })
+                            },100)
+                        }else{
+                            alert(data.error);
                         }
-                        current = data.current;
-                    }else{
-                        alert(data.error)
-                    }
-                });
-            }else{
-                apply_flag = false;
-                $.mobile.loading('hide');
-                $.get(personalLink,function(data){
-                    if(data.status == 200){
-                        right_num.html(data.data.correct);
-                        score_s.html(data.data.last_score);
-                        score_c.html(data.data.all_score);
-                        person_rank_num.html(data.data.rank);
-                        setTimeout(function(){
-                            $.mobile.changePage('#overPage',{
-                                transition:'flow'
-                            })
-                        },100)
-                    }else{
-                        alert(data.error);
-                    }
-                });
-            }
+                    });
+                }
+            },2000);
     })
 });
