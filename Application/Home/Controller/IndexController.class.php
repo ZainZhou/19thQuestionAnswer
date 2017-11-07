@@ -116,6 +116,11 @@ class IndexController extends BaseController {
         $users = M('users');
         $user = $users->where(array('openid' => $openid))->find();
         $list = $users->order('all_score desc, avg_time asc')->field('nickname, avatar, all_score')->limit(50)->select();
+        $i = 0;
+        foreach ($list as &$v) {
+            $i++;
+            $v['rank'] = $i;
+        }
         $this->ajaxReturn(array(
             'status' => 200,
             'data' => array(
@@ -134,14 +139,13 @@ class IndexController extends BaseController {
         $users = M('users');
         $user = $users->where(array('openid' => $openid))->find();
         $model = new Model();
-        $rows = $model->query("select DISTINCT b.class_id, college, rank from (select *, (@rank := @rank + 1)rank from (select class_id, sum(all_score) as score from users group by class_id order by score desc)t, (select @rank := 0)a)b inner join class on b.class_id = class.class_id");
-        $rank = 0;
-        foreach ($rows as $v) {
-            $rank++;
-            if ($user['class_id'] == $v['class_id']) {
-                break;
-            }
+        $rows = $model->query("select DISTINCT b.class_id, college, rank from (select *, (@rank := @rank + 1)rank from (select class_id, sum(all_score) as score from users where class_id != '' group by class_id order by score desc limit 50)t, (select @rank := 0)a)b inner join class on b.class_id = class.class_id order by rank asc");
+        $row = $model->query("select DISTINCT b.class_id, college, rank from (select *, (@rank := @rank + 1)rank from (select class_id, sum(all_score) as score from users where class_id != '' group by class_id order by score desc)t, (select @rank := 0)a)b inner join class on b.class_id = class.class_id where b.class_id='".$user['class_id']."'");
+        $rank = '∞';
+        if (count($row) != 0) {
+            $rank = $row[0]['rank'];
         }
+
         $this->ajaxReturn(array(
             'status' => 200,
             'data' => array(
