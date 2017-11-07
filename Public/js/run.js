@@ -109,8 +109,8 @@ $(function(){
                 }else {
                     for(var i = 0 ; i < data.data.list.length ; i++){
                         if(i<3){
-                            top3.eq(i).find('.list_college').html(data.data.list[i].college);
-                            top3.eq(i).find('.list_classNum').html(data.data.list[i].class_id+'班');
+                            top3class.eq(i).find('.list_college').html(data.data.list[i].college);
+                            top3class.eq(i).find('.list_classNum').html(data.data.list[i].class_id+'班');
                         }else{
                             if(i%2 == 0){
                                 classranks.append('<li style="background: #feebcb">' +'<span class="list_college">'+data.data.list[i].college+'</span>'+'<span class="list_classNum">'+data.data.list[i].class_id+'班'+'</span>'+'<span class="list_ranknum">'+data.data.list[i].rank+'</span></li>');
