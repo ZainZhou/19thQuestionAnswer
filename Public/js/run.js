@@ -18,6 +18,9 @@ function fillQuestion(data,qc,ops,ops_sell){
             q.operator.css('display','block');
             q.fill();
             return q;
+        case 'select','multiselct':
+            var q = new Choice();
+            q.init()
     }
 }
 $(function(){
@@ -82,7 +85,6 @@ $(function(){
             var isRight = q_now.check();
             $.mobile.loading('show');
             var _data = {};
-            _data.time = 10;
             _data.isCorrect = isRight;
             $.post(answerLink,_data,function(data){
                 if(data.status != 200){
