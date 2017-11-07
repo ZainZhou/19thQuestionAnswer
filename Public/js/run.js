@@ -297,13 +297,19 @@ $(function(){
                             judged = null;
                             console.log(data.data);
                             q_now = fillQuestion(data.data,qc,operators,ops_sell);
-                            if(q_now.type == 'fillblank'){
-                                fill_box = $('.fillbox');
-                            }
-                            if(q_now.type == 'judge'){
-                                Description.html(q_now.reason+"&nbsp;");
-                            }else{
-                                Description.html("正确答案:"+q_now.answer);
+                            switch (q_now.type){
+                                case 'fillblank':
+                                    fill_box = $('.fillbox');
+                                    QuestionType.html('填空题');
+                                    Description.html("正确答案:"+q_now.answer);
+                                    break;
+                                case 'judge':
+                                    QuestionType.html('判断题');
+                                    Description.html(q_now.reason+"&nbsp;");
+                                    break;
+                                default:
+                                    QuestionType.html('选择题');
+                                    Description.html("正确答案:"+q_now.answer);
                             }
                             current = data.current;
                         }else{
