@@ -31,7 +31,7 @@ Choice.prototype.fill = function(){
   this.operator.css('display','block');
 };
 Choice.prototype.check = function(){
-   var flag = this.selected == this.answer ?  true :  false;
+   var flag = this.selected.split("").sort().join("") == this.answer ?  true :  false;
     return flag
 };
 

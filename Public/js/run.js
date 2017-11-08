@@ -68,7 +68,6 @@ $(function(){
     var nickname = $('.nickname');
     var judged = null;
     var filled = [];
-    var chosed = [];
     var QuestionType = $('.QuestionType');
     var Description = $('.Description');
     var ranks = $('.list_rank');
@@ -247,9 +246,16 @@ $(function(){
         })
     });
     chose_btn.on('click',function(){
-        q_now.selected += $(this).attr('data-flag');
-        $(this).css('background','#ffffff');
-        chosed.push($(this));
+        if($(this).attr("selected-flag") == '0'){
+            q_now.selected += $(this).attr('data-flag');
+            $(this).css('background','#ffffff');
+            $(this).attr('selected-flag','1');
+        }else{
+            $(this).attr('selected-flag','0');
+            $(this).css('background','#fea087');
+            var x = $(this).attr('data-flag');
+            q_now.selected = q_now.selected.replace(x,"");
+        }
     });
     judge_btn.on('click',function(){
         q_now.selected = $(this).attr('dec');
@@ -259,15 +265,32 @@ $(function(){
     });
 
     fill_sell.on('click',function(){
-        fill_flag += 1;
-        if(fill_flag > q_now.answer.length){
-            return false;
+        if($(this).attr('selected-flag') == '0'){
+            if(fill_flag == q_now.answer.length){
+                return false;
+            }
+            $(this).attr('selected-flag','1');
+            fill_flag += 1;
+            $(this).attr('selected-order',fill_flag);
+            $(this).css({'background':'#fea087','color':'#ffffff'});
+            fill_box.eq(fill_flag-1).html($(this).html());
+            q_now.selected += $(this).html();
+            filled.push($(this));
+            fill_box.eq(fill_flag-1).css('color','#fb5d32');
+            console.log(q_now.selected)
+        }else{
+            if($(this).attr('selected-order') != fill_flag){
+                return false;
+            }else{
+                $(this).attr('selected-flag','0');
+                $(this).css({'background':'#ffffff','color':'#f88364'});
+                fill_box.eq(fill_flag-1).css('color','#ffffff');
+                filled.pop();
+                q_now.selected = q_now.selected.substring(0,q_now.selected.length-1);
+                fill_flag -= 1;
+                console.log(q_now.selected)
+            }
         }
-        $(this).css({'background':'#fea087','color':'#ffffff'});
-        fill_box.eq(fill_flag-1).html($(this).html());
-        q_now.selected += $(this).html();
-        filled.push($(this));
-        fill_box.eq(fill_flag-1).css('color','#fb5d32');
     });
     apply_btn.on('click',function(){
             fill_flag = 0;
@@ -287,10 +310,16 @@ $(function(){
             Description.css('visibility','visible');
             switch(q_now.type){
                 case 'judge':
-                    if(isRight){
+                    if(isRight && judged){
                         judged.css('background','#29f676');
-                    }else{
+                    }else if(!isRight && judged){
                         judged.css('background','#f13516');
+                    }else{
+                        if(q_now.answer == 1){
+                            judge_btn.eq(0).css('background','#29f676')
+                        }else{
+                            judge_btn.eq(1).css('background','#29f676')
+                        }
                     }
                     break;
                 case 'fillblank':
@@ -303,17 +332,23 @@ $(function(){
                             filled[i].css('background','#f13516');
                         }
                     }
+                    fill_sell.attr('selected-flag','0');
                     break;
                 default:
                     if(isRight){
-                        for(var i = 0 ; i < chosed.length ; i++){
-                            chosed[i].css('background','#29f676');
+                        for(var i = 0 ; i < chose_btn.length ; i++){
+                            if(chose_btn.eq(i).attr('selected-flag') == '1'){
+                                chose_btn.eq(i).css('background','#29f676');
+                            }
                         }
                     }else{
-                        for(var i = 0 ; i < chosed.length ; i++){
-                            chosed[i].css('background','#f13516');
+                        for(var i = 0 ; i < chose_btn.length ; i++){
+                            if(chose_btn.eq(i).attr('selected-flag') == '1'){
+                                chose_btn.eq(i).css('background','#f13516');
+                            }
                         }
                     }
+                    chose_btn.attr('selected-flag','0');
             }
             setTimeout(function(){
                 $.mobile.loading('show');
@@ -329,7 +364,6 @@ $(function(){
                         apply_flag = false;
                         if(data.status == 200){
                             filled = [];
-                            chosed = [];
                             judged = null;
                             console.log(data.data);
                             q_now = fillQuestion(data.data,qc,operators,ops_sell);
