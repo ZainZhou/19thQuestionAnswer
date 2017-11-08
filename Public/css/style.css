@@ -56,6 +56,13 @@
   top: 2.4%;
   left: 2.4%;
 }
+#homePage .slogan_container {
+  background: url("../images/HomePage_slogan.png") center no-repeat;
+  background-size: 100%;
+}
+#homePage .slogan_container .HomePage_slogan {
+  visibility: hidden;
+}
 #homePage .btn_container {
   text-align: center;
   padding-top: 16%;
