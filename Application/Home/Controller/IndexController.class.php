@@ -182,6 +182,9 @@ class IndexController extends BaseController {
                 array_push($select, $v);
             }
         }
+        if(strlen($answer) > 1){
+            $q = $q.'（多选题）';
+        }
         $data = array(
             'id' => $id,
             'question' => $q,
@@ -252,11 +255,11 @@ class IndexController extends BaseController {
 
     public function JSSDKSignature(){
         $string = new Stringtp();
-        $jsapi_ticket =  $this->getTicket();
+        $jsapi_ticket = $this->getTicket();
         $data['jsapi_ticket'] = $jsapi_ticket['data'];
         $data['noncestr'] = $string->randString();
         $data['timestamp'] = time();
-        $data['url'] = 'https://'.$_SERVER['HTTP_HOST'].__SELF__;//生成当前页面url
+        $data['url'] = 'https://'.$_SERVER['HTTP_HOST'].'/game'.__SELF__;//生成当前页面url
         $data['signature'] = sha1($this->ToUrlParams($data));
         return $data;
     }
