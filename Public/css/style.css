@@ -347,7 +347,6 @@
   color: #f46e49;
 }
 #classRankPage .list_container .rank_list .classlist_rank li .list_college {
-  border-radius: 50%;
   float: left;
   font-size: 12px;
   width: 36%;
@@ -433,7 +432,7 @@
   font-family: hb;
 }
 #rankPage .list_container .rank_list .rank .ranknum {
-  font-family: hb;
+  font-family: hb !important;
   color: #53ccc1;
   font-size: 25px;
 }
