@@ -347,6 +347,7 @@
   color: #f46e49;
 }
 #classRankPage .list_container .rank_list .classlist_rank li .list_college {
+  border-radius: 50%;
   float: left;
   font-size: 12px;
   width: 36%;
