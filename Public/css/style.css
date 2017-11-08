@@ -52,7 +52,7 @@
 #homePage .btn_container {
   text-align: center;
   margin-top: 14%;
-  height: 30%;
+  height: 21%;
 }
 #homePage .btn_container * {
   display: inline-block;
@@ -321,8 +321,8 @@
   color: #e87d60;
   font-family: hb;
 }
-#classRankPage .list_container .rank_list .rank .ranknum {
-  font-family: hb !important;
+#classRankPage .list_container .rank_list .rank .classranknum {
+  font-family: hb;
   color: #53ccc1;
   font-size: 25px;
 }
@@ -350,7 +350,7 @@
   border-radius: 50%;
   float: left;
   font-size: 12px;
-  width: 36%;
+  width: 33%;
   padding-top: 5%;
 }
 #classRankPage .list_container .rank_list .classlist_rank li .list_classNum {
@@ -433,7 +433,7 @@
   font-family: hb;
 }
 #rankPage .list_container .rank_list .rank .ranknum {
-  font-family: hb !important;
+  font-family: hb;
   color: #53ccc1;
   font-size: 25px;
 }
