@@ -322,7 +322,7 @@
   font-family: hb;
 }
 #classRankPage .list_container .rank_list .rank .ranknum {
-  font-family: hb;
+  font-family: hb !important;
   color: #53ccc1;
   font-size: 25px;
 }
@@ -350,7 +350,7 @@
   border-radius: 50%;
   float: left;
   font-size: 12px;
-  width: 50%;
+  width: 36%;
   padding-top: 5%;
 }
 #classRankPage .list_container .rank_list .classlist_rank li .list_classNum {
