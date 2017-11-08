@@ -5,7 +5,7 @@
 }
 @font-face {
   font-family: 'hb';
-  src: url('/game/19thQuestionAnswer/Public/font/hb.ttf');
+  src: url('../font/hb.ttf');
   font-weight: normal;
   font-style: normal;
 }
@@ -25,20 +25,20 @@
   text-shadow: 1.5px 0px 0px #6f4022, -1.5px 0px 0px #6f4022, 0px 1.5px 0px #6f4022, 0px -1.5px 0px #6f4022;
 }
 .b_btn {
-  background: url("/game/19thQuestionAnswer/Public/images/blue_btn.png") center center no-repeat;
+  background: url("../images/blue_btn.png") center center no-repeat;
   background-size: 100% 100%;
 }
 .r_btn {
-  background: url("/game/19thQuestionAnswer/Public/images/red_btn.png") center center no-repeat;
+  background: url("../images/red_btn.png") center center no-repeat;
   background-size: 100% 100%;
 }
 .y_btn {
-  background: url("/game/19thQuestionAnswer/Public/images/yellow_btn.png") center center no-repeat;
+  background: url("../images/yellow_btn.png") center center no-repeat;
   background-size: 100% 100%;
 }
 #homePage {
   height: 100%;
-  background: url("/game/19thQuestionAnswer/Public/images/homePage_back.jpg") center no-repeat;
+  background: url("../images/homePage_back.jpg") center no-repeat;
   background-size: 100% 100%;
 }
 #homePage .HomePage_slogan {
@@ -65,7 +65,7 @@
   margin-top: 3%;
 }
 #overPage {
-  background: url("/game/19thQuestionAnswer/Public/images/gamePage.jpg") center no-repeat;
+  background: url("../images/gamePage.jpg") center no-repeat;
   background-size: 100% 100%;
   height: 100%;
 }
@@ -116,7 +116,7 @@
   font-weight: 800;
 }
 #testPage {
-  background: url("/game/19thQuestionAnswer/Public/images/gamePage.jpg") center no-repeat;
+  background: url("../images/gamePage.jpg") center no-repeat;
   background-size: 100% 100%;
 }
 #testPage .QuestionType {
@@ -154,12 +154,13 @@
 #testPage .Description {
   float: left;
   visibility: hidden;
-  font-size: 12px;
-  color: #ffffff;
+  font-size: 14px;
+  color: #333;
   margin-top: 5%;
   margin-bottom: 1%;
   margin-left: 9%;
   width: 82%;
+  font-weight: 700;
 }
 #testPage .MultipleChoice {
   display: none;

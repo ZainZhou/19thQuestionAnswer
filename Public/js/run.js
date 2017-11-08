@@ -77,6 +77,8 @@ $(function(){
     var returnHome = $('.returnHome');
     var classrank_load = 0;
     var personalRank = $('.personalRank');
+    var saveTop3 = ranks.html();
+    var saveClassTop3 = classranks.html();
     personalRank.on('click',function(){
         $.mobile.changePage('#rankPage',{
             transition:'flow'
@@ -106,6 +108,20 @@ $(function(){
                 nickname.html(data.data.personal.nickname);
                 classranknum.html(data.data.personal.rank);
                 if(classrank_load){
+                    classranks.html("");
+                    classranks.html(saveClassTop3);
+                    for(var i = 0 ; i < data.data.list.length ; i++){
+                        if(i<3){
+                            top3class.eq(i).find('.list_college').html(data.data.list[i].college);
+                            top3class.eq(i).find('.list_classNum').html(data.data.list[i].class_id+'班');
+                        }else{
+                            if(i%2 == 0){
+                                classranks.append('<li style="background: #feebcb">' +'<span class="list_college">'+data.data.list[i].college+'</span>'+'<span class="list_classNum">'+data.data.list[i].class_id+'班'+'</span>'+'<span class="list_ranknum">'+data.data.list[i].rank+'</span></li>');
+                            }else{
+                                classranks.append('<li>' +'<span class="list_college">'+data.data.list[i].college+'</span>'+'<span class="list_classNum">'+data.data.list[i].class_id+'班'+'</span>'+'<span class="list_ranknum">'+data.data.list[i].rank+'</span></li>');
+                            }
+                        }
+                    }
                     $.mobile.changePage('#classRankPage',{
                         transition: 'flow'
                     });
@@ -147,6 +163,20 @@ $(function(){
                 nickname.html(data.data.personal.nickname);
                 ranknum.html(data.data.personal.rank);
                 if(rank_load){
+                    ranks.html("");
+                    ranks.html(saveTop3);
+                    for(var i = 0 ; i < data.data.list.length ; i++){
+                        if(i<3){
+                            top3.eq(i).find('.list_avatar').attr('src',data.data.list[i].avatar);
+                            top3.eq(i).find('.list_nickname').html(data.data.list[i].nickname);
+                        }else{
+                            if(i%2 == 0){
+                                ranks.append('<li style="background: #feebcb"> <img src="'+data.data.list[i].avatar+'" alt="" class="list_avatar"> <span class="list_nickname">'+data.data.list[i].nickname+'</span> <span class="list_ranknum">'+data.data.list[i].rank+'</span> </li>');
+                            }else{
+                                ranks.append('<li> <img src="'+data.data.list[i].avatar+'" alt="" class="list_avatar"> <span class="list_nickname">'+data.data.list[i].nickname+'</span> <span class="list_ranknum">'+data.data.list[i].rank+'</span> </li>');
+                            }
+                        }
+                    }
                     $.mobile.changePage('#rankPage',{
                         transition: 'flow'
                     });
