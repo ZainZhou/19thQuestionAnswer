@@ -84,6 +84,18 @@ $(function(){
     var personalRank = $('.personalRank');
     var saveTop3 = ranks.html();
     var saveClassTop3 = classranks.html();
+    var closeP = $('.closeP');
+    var mask = $('.mask');
+    var programerHolder = $('.programerHolder');
+    var d_btn = $('.developer_btn');
+    d_btn.on('click',function(){
+       mask.css('display','block');
+       programerHolder.css('display','block');
+    });
+    closeP.on('click',function(){
+        mask.css('display','none');
+        programerHolder.css('display','none');
+    });
     personalRank.on('click',function(){
         $.mobile.changePage('#rankPage',{
             transition:'flow'
