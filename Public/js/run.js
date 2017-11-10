@@ -127,6 +127,7 @@ $(function(){
                 if(classrank_load){
                     classranks.html("");
                     classranks.html(saveClassTop3);
+                    top3class = classranks.find('li');
                     for(var i = 0 ; i < data.data.list.length ; i++){
                         if(i<3){
                             top3class.eq(i).find('.list_college').html(data.data.list[i].college);
@@ -182,6 +183,7 @@ $(function(){
                 if(rank_load){
                     ranks.html("");
                     ranks.html(saveTop3);
+                    top3 = ranks.find('li');
                     for(var i = 0 ; i < data.data.list.length ; i++){
                         if(i<3){
                             top3.eq(i).find('.list_avatar').attr('src',data.data.list[i].avatar);
